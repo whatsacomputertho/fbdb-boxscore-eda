@@ -134,6 +134,65 @@ class BoxScore:
         """
         return self.score_obj
 
+class LabeledBoxScore(BoxScore):
+    def __init__(
+            self,
+            score_obj: Dict[str, Any],
+            home_offense: int,
+            home_defense: int,
+            away_offense: int,
+            away_defense: int
+        ) -> Type["LabeledBoxScore"]:
+        """
+        Constructor for the LabeledBoxScore class
+
+        Args:
+        None
+
+        Returns:
+        LabeledBoxScore: The labeled box score
+        """
+        super().__init__(score_obj)
+        self.home_offense = home_offense
+        self.home_defense = home_defense
+        self.away_offense = away_offense
+        self.away_defense = away_defense
+
+    def __str__(self) -> str:
+        """
+        Serializes the BoxScore instance as a string
+
+        Args:
+        None
+
+        Returns:
+        str: The string-serialized BoxScore
+        """
+        return f"[{self.get_date_str()}] (O:{self.home_offense}, " + \
+            f"D:{self.home_defense}) {self.get_home_team()} " + \
+            f"{self.get_home_score()} - (O:{self.away_offense}, " + \
+            f"D:{self.away_defense}) {self.get_away_team()} " + \
+            f"{self.get_away_score()}"
+
+    def __json__(self) -> Dict[str, Any]:
+        """
+        Serializes the BoxScore instance as a JSON dict
+
+        Args:
+        None
+
+        Returns
+        dict: The JSON-serialized BoxScore
+        """
+        obj = self.score_obj
+        obj.update({
+            "home_offense": self.home_offense,
+            "home_defense": self.home_defense,
+            "away_offense": self.away_offense,
+            "away_defense": self.away_defense
+        })
+        return obj
+
 class BoxScoreList:
     @staticmethod
     def validate_static(score_list: List[Dict[str, Any]]) -> Tuple[bool, str]:
@@ -428,6 +487,40 @@ class BoxScoreSummaryList:
         None
         """
         self.summary.extend(teams.summary)
+
+    def get_offense_summary_json(self) -> List[Dict[str, Any]]:
+        """
+        Returns only the offensive summaries from the summary list
+
+        Args:
+        None
+
+        Returns:
+        list: The offensive summaries serialized as a JSON list
+        """
+        summaries = []
+        for s in self.summary:
+            offense = json.loads(s.offense.to_json())
+            offense.update({"team": s.team})
+            summaries.append(offense)
+        return summaries
+
+    def get_defense_summary_json(self) -> List[Dict[str, Any]]:
+        """
+        Returns only the defensive summaries from the summary list
+
+        Args:
+        None
+
+        Returns:
+        list: The defensive summaries serialized as a JSON list
+        """
+        summaries = []
+        for s in self.summary:
+            offense = json.loads(s.defense.to_json())
+            offense.update({"team": s.team})
+            summaries.append(offense)
+        return summaries
 
     def __json__(self) -> List[Dict[str, Any]]:
         """
