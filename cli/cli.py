@@ -125,5 +125,11 @@ def get_cli_args() -> Type[argparse.Namespace]:
         help="Label historic box scores"
     )
 
+    # Initialize the boxscore label subcommand parser
+    boxscore_aggregate_parser = boxscore_subparser.add_parser(
+        "aggregate",
+        help="Aggregate labeled historic box scores"
+    )
+
     # Parse the CLI args and return
     return parser.parse_args()

@@ -3,6 +3,7 @@ import json
 import matplotlib.pyplot
 import os
 import pandas
+import random
 import seaborn
 from sklearn.cluster import KMeans
 from boxscore.boxscore import BoxScoreList, BoxScoreSeason, BoxScoreSummaryList, LabeledBoxScore
@@ -237,6 +238,55 @@ def label_boxscores(args: argparse.Namespace) -> None:
                 json.dumps(labeled, indent=4)
             )
 
+def aggregate_boxscores(args: argparse.Namespace) -> None:
+    """
+    Execute the boxscore label subcommand
+
+    Args:
+    args (argparse.Namespace): The CLI args
+
+    Returns:
+    None
+    """
+    # Loop through each year
+    years = [
+        int(d.replace(".json", "")) for d in os.listdir("./data/raw")
+    ]
+    training = []
+    testing = []
+    validation = []
+    for year in years:
+        print(f"Aggregating year {year}")
+        with open(f"./data/labeled/{year}.json") as labeled_data:
+            labeled = json.load(labeled_data)
+        for score in labeled:
+            lbs = LabeledBoxScore(
+                {
+                    "date": score["date"],
+                    "home_team": score["home_team"],
+                    "home_score": score["home_score"],
+                    "away_team": score["away_team"],
+                    "away_score": score["away_score"]
+                },
+                score["home_offense"],
+                score["home_defense"],
+                score["away_offense"],
+                score["away_defense"]
+            )
+            random_int = random.randint(0, 9)
+            if random_int < 1:
+                validation.append(lbs)
+            elif random_int < 2:
+                testing.append(lbs)
+            else:
+                training.append(lbs)
+    with open("./data/processed/training.json", "w") as training_data:
+        training_data.write(json.dumps(training, indent=4))
+    with open("./data/processed/validation.json", "w") as validation_data:
+        validation_data.write(json.dumps(validation, indent=4))
+    with open("./data/processed/testing.json", "w") as testing_data:
+        testing_data.write(json.dumps(testing, indent=4))
+
 def main(args: argparse.Namespace) -> None:
     """
     Execute the football database box score EDA CLI
@@ -247,7 +297,6 @@ def main(args: argparse.Namespace) -> None:
     Returns:
     None
     """
-#    try:
     if args.command == "boxscore":
         if args.subcommand == "list":
             list_boxscores(args)
@@ -257,6 +306,8 @@ def main(args: argparse.Namespace) -> None:
             visualize_boxscores(args)
         elif args.subcommand == "label":
             label_boxscores(args)
+        elif args.subcommand == "aggregate":
+            aggregate_boxscores(args)
         else:
             raise Exception(
                 f"Unrecognized boxscore subcommand {args.subcommand}"
@@ -265,10 +316,6 @@ def main(args: argparse.Namespace) -> None:
         raise Exception(
             f"Unrecognized command {args.command}"
         )
-"""     except Exception as e:
-        print(f"Error: {str(e)}")
-        print("Use the -h / --help arg for usage")
-        exit(1) """
 
 if __name__ == "__main__":
     main(get_cli_args())
