@@ -1,3 +1,5 @@
 pandas
 jsonschema
 matplotlib
+seaborn
+sklearn

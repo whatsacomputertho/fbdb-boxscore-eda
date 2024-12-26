@@ -72,6 +72,20 @@ def get_cli_args() -> Type[argparse.Namespace]:
         type=str
     )
     boxscore_summarize_parser.add_argument(
+        "--offense",
+        dest="offense",
+        help="Whether to summarize only offense",
+        action="store_true",
+        default=False
+    )
+    boxscore_summarize_parser.add_argument(
+        "--defense",
+        dest="defense",
+        help="Whether to summarize only defense",
+        action="store_true",
+        default=False
+    )
+    boxscore_summarize_parser.add_argument(
         "-o", "--output",
         dest="output",
         help="The format in which to summarize the box scores",
@@ -83,6 +97,32 @@ def get_cli_args() -> Type[argparse.Namespace]:
         dest="file",
         help="The file in which to write the box score summaries",
         type=str
+    )
+
+    # Initialize the boxscore visualize subcommand parser
+    boxscore_visualize_parser = boxscore_subparser.add_parser(
+        "visualize",
+        help="Visualize historic box scores"
+    )
+    boxscore_visualize_parser.add_argument(
+        "--offense",
+        dest="offense",
+        help="Whether to visualize historic offensive box scores",
+        action="store_true",
+        default=False
+    )
+    boxscore_visualize_parser.add_argument(
+        "--defense",
+        dest="defense",
+        help="Whether to visualize historic defensive box scores",
+        action="store_true",
+        default=False
+    )
+
+    # Initialize the boxscore label subcommand parser
+    boxscore_label_parser = boxscore_subparser.add_parser(
+        "label",
+        help="Label historic box scores"
     )
 
     # Parse the CLI args and return
