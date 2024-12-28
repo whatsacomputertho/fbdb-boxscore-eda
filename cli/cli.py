@@ -1,22 +1,118 @@
 import argparse
 from typing import Type
 
-def get_cli_args() -> Type[argparse.Namespace]:
+def set_labeled_subcommand(
+        subparser: Type[argparse.ArgumentParser]
+    ) -> Type[argparse.ArgumentParser]:
     """
-    Parse the CLI args and return as an argparse naespace
+    Adds the labeled subcommand parser & specifies its arguments
 
     Args:
-    None
+    subparser (argparse.ArgumentParser): The subparsers on the parent parser
 
     Returns:
-    argparse.Namespace: The parsed CLI args
+    argparse.ArgumentParser: The mutated argument parser
     """
-    # Initialize the parent command parser and add subparsers
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest="command")
+    # Initialize the labeled subcommand parser, add subparsers
+    labeled_parser = subparser.add_parser(
+        "labeled",
+        help="Analyze labeled box scores"
+    )
+    labeled_subparser = labeled_parser.add_subparsers(dest="subcommand")
 
+    # Initialize the labeled skill-diff-scores subcommand parser
+    labeled_sds_subparser = labeled_subparser.add_parser(
+        "skill-diff-scores",
+        help="Aggregate the scores by skill differential"
+    )
+
+    # Initialize the labeled skill-diff-scores subcommand parser
+    labeled_sdsumm_subparser = labeled_subparser.add_parser(
+        "skill-diff-summary",
+        help="Summarize the scores by skill differential"
+    )
+    labeled_sdsumm_subparser.add_argument(
+        "--home",
+        dest="home",
+        help="Whether to summarize home scores",
+        action="store_true",
+        default=False
+    )
+    labeled_sdsumm_subparser.add_argument(
+        "--away",
+        dest="away",
+        help="Whether to summarize away scores",
+        action="store_true",
+        default=False
+    )
+
+    # Initialize the labeled skill-diff-visualize subcommand parser
+    labeled_sdvis_subparser = labeled_subparser.add_parser(
+        "skill-diff-visualize",
+        help="Visualize the scoring by skill differential"
+    )
+    labeled_sdvis_subparser.add_argument(
+        "--home",
+        dest="home",
+        help="Whether to visualize home scores only",
+        action="store_true",
+        default=False
+    )
+    labeled_sdvis_subparser.add_argument(
+        "--away",
+        dest="away",
+        help="Whether to visualize away scores only",
+        action="store_true",
+        default=False
+    )
+
+    # Initialize the labeled home-away-visualize subcommand parser
+    labeled_home_away_subparser = labeled_subparser.add_parser(
+        "home-away-visualize",
+        help="Visualize the scoring by home versus away"
+    )
+
+    # Initialize the labeled mean-score-train subcommand parser
+    mean_model_subparser = labeled_subparser.add_parser(
+        "mean-score-train",
+        help="Train a regression model for mean score"
+    )
+    mean_model_subparser.add_argument(
+        "--away",
+        dest="away",
+        help="Whether to train using away scores only",
+        action="store_true",
+        default=False
+    )
+
+    # Initialize the labeled std-score-train subcommand parser
+    std_model_subparser = labeled_subparser.add_parser(
+        "std-score-train",
+        help="Train a regression model for std score"
+    )
+    std_model_subparser.add_argument(
+        "--away",
+        dest="away",
+        help="Whether to train using away scores only",
+        action="store_true",
+        default=False
+    )
+    return subparser
+
+def set_boxscore_subcommand(
+        subparser: Type[argparse.ArgumentParser]
+    ) -> Type[argparse.ArgumentParser]:
+    """
+    Adds the boxscore subcommand parser & specifies its arguments
+
+    Args:
+    subparser (argparse.ArgumentParser): The subparsers on the parent parser
+
+    Returns:
+    argparse.ArgumentParser: The mutated argument parser
+    """
     # Initialize the boxscore subcommand parser, add subparsers
-    boxscore_parser = subparsers.add_parser(
+    boxscore_parser = subparser.add_parser(
         "boxscore",
         help="Analyze historic box scores"
     )
@@ -130,6 +226,25 @@ def get_cli_args() -> Type[argparse.Namespace]:
         "aggregate",
         help="Aggregate labeled historic box scores"
     )
+    return subparser
+
+def get_cli_args() -> Type[argparse.Namespace]:
+    """
+    Parse the CLI args and return as an argparse naespace
+
+    Args:
+    None
+
+    Returns:
+    argparse.Namespace: The parsed CLI args
+    """
+    # Initialize the parent command parser and add subparsers
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="command")
+
+    # Add the boxscore subcommand to the parent parser
+    subparsers = set_boxscore_subcommand(subparsers)
+    subparsers = set_labeled_subcommand(subparsers)
 
     # Parse the CLI args and return
     return parser.parse_args()

@@ -1,0 +1,47 @@
+[
+    {
+        "norm_diff": 0.0,
+        "mean_score": 9.3671875,
+        "std_score": 6.4817948298
+    },
+    {
+        "norm_diff": 0.125,
+        "mean_score": 12.2220421394,
+        "std_score": 7.32530087
+    },
+    {
+        "norm_diff": 0.25,
+        "mean_score": 14.2501797268,
+        "std_score": 8.192773507
+    },
+    {
+        "norm_diff": 0.375,
+        "mean_score": 16.8838776568,
+        "std_score": 8.8150659825
+    },
+    {
+        "norm_diff": 0.5,
+        "mean_score": 19.3722963645,
+        "std_score": 8.8825934299
+    },
+    {
+        "norm_diff": 0.625,
+        "mean_score": 22.0789733465,
+        "std_score": 9.4098809183
+    },
+    {
+        "norm_diff": 0.75,
+        "mean_score": 25.3302358828,
+        "std_score": 9.2513553514
+    },
+    {
+        "norm_diff": 0.875,
+        "mean_score": 28.9319444444,
+        "std_score": 9.2704433549
+    },
+    {
+        "norm_diff": 1.0,
+        "mean_score": 31.5263157895,
+        "std_score": 8.8811883255
+    }
+]
