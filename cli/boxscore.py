@@ -286,3 +286,25 @@ def aggregate_boxscores(args: argparse.Namespace) -> None:
         validation_data.write(json.dumps(validation, indent=4))
     with open("./data/processed/testing.json", "w") as testing_data:
         testing_data.write(json.dumps(testing, indent=4))
+
+def boxscore_frequency(args: argparse.Namespace) -> None:
+    """
+    Execute the boxscore frequency subcommand
+
+    Args:
+    args (argparse.Namespace): The CLI args
+
+    Returns:
+    None
+    """
+    score_freq_df = pandas.read_json("./data/preprocessed/skill_diff_scores.json")
+    freq = score_freq_df['score'].value_counts(normalize=False)
+    freq = freq.sort_index()
+    freq_obj = {}
+    for key, val in freq.items():
+        freq_obj[key] = val
+    for i in range(80):
+        if i not in freq_obj.keys():
+            freq_obj[i] = 0
+    with open("./data/preprocessed/frequency.json", 'w') as freq_file:
+        freq_file.write(json.dumps(freq_obj, indent=4, sort_keys=True))

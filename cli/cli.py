@@ -226,6 +226,12 @@ def set_boxscore_subcommand(
         "aggregate",
         help="Aggregate labeled historic box scores"
     )
+
+    # Initialize the frequency label subcommand parser
+    boxscore_frequency_parser = boxscore_subparser.add_parser(
+        "frequency",
+        help="Get the frequency of historic box scores"
+    )
     return subparser
 
 def get_cli_args() -> Type[argparse.Namespace]:
