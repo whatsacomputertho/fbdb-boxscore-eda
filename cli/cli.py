@@ -232,6 +232,12 @@ def set_boxscore_subcommand(
         "frequency",
         help="Get the frequency of historic box scores"
     )
+
+    # Initialize the frequency label subcommand parser
+    boxscore_tie_frequency_parser = boxscore_subparser.add_parser(
+        "tie-frequency",
+        help="Get the frequency of historic ties"
+    )
     return subparser
 
 def get_cli_args() -> Type[argparse.Namespace]:
