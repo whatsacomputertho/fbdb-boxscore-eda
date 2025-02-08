@@ -4,7 +4,8 @@ from cli.boxscore   import  list_boxscores, \
                             visualize_boxscores, \
                             label_boxscores, \
                             aggregate_boxscores, \
-                            boxscore_frequency
+                            boxscore_frequency, \
+                            boxscore_tie_frequency
 from cli.cli        import  get_cli_args
 from cli.labeled    import  get_skill_differential_score_summary, \
                             summarize_skill_differential_score_summary, \
@@ -36,6 +37,8 @@ def main(args: argparse.Namespace) -> None:
             aggregate_boxscores(args)
         elif args.subcommand == "frequency":
             boxscore_frequency(args)
+        elif args.subcommand == "tie-frequency":
+            boxscore_tie_frequency(args)
         else:
             raise Exception(
                 f"Unrecognized boxscore subcommand {args.subcommand}"

@@ -308,3 +308,20 @@ def boxscore_frequency(args: argparse.Namespace) -> None:
             freq_obj[i] = 0
     with open("./data/preprocessed/frequency.json", 'w') as freq_file:
         freq_file.write(json.dumps(freq_obj, indent=4, sort_keys=True))
+
+def boxscore_tie_frequency(args: argparse.Namespace) -> None:
+    """
+    Execute the boxscore tie-frequency subcommand
+
+    Args:
+    args (argparse.Namespace): The CLI args
+
+    Returns:
+    None
+    """
+    score_df = pandas.read_json("./data/processed/training.json")
+    tie_df = score_df["home_score"] == score_df["away_score"]
+    tie_freq = tie_df.value_counts()
+    print(tie_freq)
+    print("\nExpected tie probability:")
+    print(tie_freq[True] / (tie_freq[True] + tie_freq[False]))
