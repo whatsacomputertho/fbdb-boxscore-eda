@@ -8,6 +8,7 @@ from boxscore.boxscore  import  BoxScoreList, \
                                 BoxScoreSummaryList, \
                                 LabeledBoxScore
 from sklearn.cluster    import  KMeans
+from sklearn.linear_model import LinearRegression
 
 def list_boxscores(args: argparse.Namespace) -> None:
     """
@@ -325,3 +326,51 @@ def boxscore_tie_frequency(args: argparse.Namespace) -> None:
     print(tie_freq)
     print("\nExpected tie probability:")
     print(tie_freq[True] / (tie_freq[True] + tie_freq[False]))
+
+def boxscore_tie_frequency_by_skill(args: argparse.Namespace) -> None:
+    """
+    Execute the boxscore tie-frequency-by-skill subcommand
+
+    Args:
+    args (argparse.Namespace): The CLI args
+
+    Returns:
+    None
+    """
+    score_df = pandas.read_json("./data/processed/training.json")
+    ha_diff = score_df["home_offense"] - score_df["away_defense"]
+    ah_diff = score_df["away_offense"] - score_df["home_defense"]
+    tie_df = score_df["home_score"] == score_df["away_score"]
+    score_df["tie"] = tie_df
+    score_df["ha_diff"] = ha_diff
+    score_df["ah_diff"] = ah_diff
+    scores = []
+    for _, row in score_df.iterrows():
+        ha_tie = {
+            "norm_diff": (row["ha_diff"] + 4) / 8,
+            "tie": row["tie"]
+        }
+        ah_tie = {
+            "norm_diff": (row["ah_diff"] + 4) / 8,
+            "tie": row["tie"]
+        }
+        scores.append(ha_tie)
+        scores.append(ah_tie)
+    tie_freq_by_skill_df = pandas.DataFrame.from_dict(scores)
+    tie_freq = tie_freq_by_skill_df.groupby("norm_diff", as_index=False)['tie'].value_counts(normalize=True)
+    tie_freq = tie_freq[tie_freq['tie']]
+
+    # Train a linear regression model for the mean scores
+    tie_freq_model = LinearRegression()
+    tie_freq_model.fit(tie_freq[["norm_diff"]], tie_freq[["proportion"]])
+    print(f"y = {tie_freq_model.coef_}x + {tie_freq_model.intercept_}")
+
+    # Test the linear regression model using the test data
+    y_pred = tie_freq_model.predict(tie_freq[["norm_diff"]])
+    ax = matplotlib.pyplot.gca()
+    ax.set_title(f"Tie probability over normalized skill differential (linreg)")
+    ax.set_xlabel("Normalized skill differential (offense versus defense)")
+    ax.set_ylabel(f"Tie probability")
+    matplotlib.pyplot.scatter(tie_freq[["norm_diff"]], tie_freq[["proportion"]], color='g')
+    matplotlib.pyplot.plot(tie_freq[["norm_diff"]], y_pred, color='b')
+    matplotlib.pyplot.show()

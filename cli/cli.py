@@ -221,21 +221,27 @@ def set_boxscore_subcommand(
         help="Label historic box scores"
     )
 
-    # Initialize the boxscore label subcommand parser
+    # Initialize the boxscore aggregate subcommand parser
     boxscore_aggregate_parser = boxscore_subparser.add_parser(
         "aggregate",
         help="Aggregate labeled historic box scores"
     )
 
-    # Initialize the frequency label subcommand parser
+    # Initialize the boxscore frequency subcommand parser
     boxscore_frequency_parser = boxscore_subparser.add_parser(
         "frequency",
         help="Get the frequency of historic box scores"
     )
 
-    # Initialize the frequency label subcommand parser
+    # Initialize the boxscore tie-frequency subcommand parser
     boxscore_tie_frequency_parser = boxscore_subparser.add_parser(
         "tie-frequency",
+        help="Get the frequency of historic ties"
+    )
+
+    # Initialize the boxscore tie-frequency-by-skill subcommand parser
+    boxscore_tie_frequency_by_skill_parser = boxscore_subparser.add_parser(
+        "tie-frequency-by-skill",
         help="Get the frequency of historic ties"
     )
     return subparser
