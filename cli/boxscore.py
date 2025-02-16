@@ -9,6 +9,7 @@ from boxscore.boxscore  import  BoxScoreList, \
                                 LabeledBoxScore
 from sklearn.cluster    import  KMeans
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 def list_boxscores(args: argparse.Namespace) -> None:
     """
@@ -320,6 +321,21 @@ def boxscore_model_frequency(args: argparse.Namespace) -> None:
     matplotlib.pyplot.ylabel('Frequency')
     matplotlib.pyplot.title('Adjusted FootballSim model score frequency')
     matplotlib.pyplot.show()
+
+def boxscore_model_freq_mse(args: argparse.Namespace) -> None:
+    """
+    Calculate mean squared error between the models and the actual data
+    """
+    real_freq_df = pandas.read_json("./data/preprocessed/real_frequency.json")
+    base_freq_df = pandas.read_json("./data/preprocessed/base_model_frequency.json")
+    adj_freq_df = pandas.read_json("./data/preprocessed/adj_model_frequency.json")
+    real_freq_df["frequency"] = real_freq_df["frequency"].str.rstrip("%").astype('float')
+    base_freq_df["Frequency"] = base_freq_df["Frequency"].str.rstrip("%").astype('float')
+    adj_freq_df["frequency"] = adj_freq_df["frequency"].str.rstrip("%").astype('float')
+    base_mse = mean_squared_error(real_freq_df["frequency"], base_freq_df["Frequency"])
+    adj_mse = mean_squared_error(real_freq_df["frequency"], adj_freq_df["frequency"])
+    print(f"Base model mean squared error: {base_mse}")
+    print(f"Adj model mean squared error:  {adj_mse}")
 
 def boxscore_tie_frequency(args: argparse.Namespace) -> None:
     """
