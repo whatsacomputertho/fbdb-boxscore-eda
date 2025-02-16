@@ -314,11 +314,11 @@ def boxscore_model_frequency(args: argparse.Namespace) -> None:
     """
     Execute the model frequency subcommand
     """
-    model_freq_df = pandas.read_json("./data/preprocessed/base_model_frequency.json")
-    matplotlib.pyplot.bar(model_freq_df['Score'], model_freq_df['Count'])
+    model_freq_df = pandas.read_json("./data/preprocessed/adj_model_frequency.json")
+    matplotlib.pyplot.bar(model_freq_df['score'], model_freq_df['count'])
     matplotlib.pyplot.xlabel('Score')
     matplotlib.pyplot.ylabel('Frequency')
-    matplotlib.pyplot.title('Base FootballSim model score frequency')
+    matplotlib.pyplot.title('Adjusted FootballSim model score frequency')
     matplotlib.pyplot.show()
 
 def boxscore_tie_frequency(args: argparse.Namespace) -> None:
