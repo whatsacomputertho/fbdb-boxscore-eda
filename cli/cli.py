@@ -239,6 +239,12 @@ def set_boxscore_subcommand(
         help="Get the frequency of model-generated box scores"
     )
 
+    # Initialize the boxscore model-frequency subcommand parser
+    boxscore_model_frequency_mse_parser = boxscore_subparser.add_parser(
+        "model-frequency-mse",
+        help="Get the mean squared error of model-generated versus real box scores"
+    )
+
     # Initialize the boxscore tie-frequency subcommand parser
     boxscore_tie_frequency_parser = boxscore_subparser.add_parser(
         "tie-frequency",
