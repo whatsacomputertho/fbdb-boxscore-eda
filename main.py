@@ -5,6 +5,7 @@ from cli.boxscore   import  list_boxscores, \
                             label_boxscores, \
                             aggregate_boxscores, \
                             boxscore_frequency, \
+                            boxscore_model_frequency, \
                             boxscore_tie_frequency, \
                             boxscore_tie_frequency_by_skill
 from cli.cli        import  get_cli_args
@@ -38,6 +39,8 @@ def main(args: argparse.Namespace) -> None:
             aggregate_boxscores(args)
         elif args.subcommand == "frequency":
             boxscore_frequency(args)
+        elif args.subcommand == "model-frequency":
+            boxscore_model_frequency(args)
         elif args.subcommand == "tie-frequency":
             boxscore_tie_frequency(args)
         elif args.subcommand == "tie-frequency-by-skill":
